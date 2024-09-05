@@ -1,0 +1,170 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "data": {
+      "url": "https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-03-05/jobs_gender.csv",
+      "format":{
+        "type": "csv"
+      }
+      },
+    "title": {
+        "text": "Explorer: Gender disparities in the US labor market",
+        "anchor": "middle",
+        "fontSize": 20
+      },
+"vconcat": [
+    {
+      "concat": [
+        {
+          "width": 150,
+          "height": 500,
+          "params": [
+            {
+                "name": "point",
+                "select": {
+                  "type": "point",
+                  "fields": ["major_category"]
+                },
+                "bind": "legend"
+              }
+          ],
+
+          "mark": {"type":"bar", "cornerRadiusEnd": 7},
+          
+          "encoding": {
+            "y": {
+              "field": "minor_category",
+              "type": "nominal",
+              "title": null,
+              "axis": {"titleFontSize": 14, "labelFontSize": 8},
+               "sort": {
+                "field": "percent_female",
+                "op":"median",
+                "order": "descending"
+              }
+    
+            },
+            "x": {
+              "field": "percent_female",
+              "type": "quantitative",
+              "aggregate": "median",
+              "scale": {"domain": [0, 100]},
+              "title":"Female Participation (as a % of total workforce)",
+              "axis": {"titleFontSize": 14, "labelFontSize": 12}
+            },
+
+            "tooltip": 
+            {"aggregate": "median",
+            "field": "percent_female", 
+            "type": "quantitative"},
+
+            "color": {
+              "condition": {
+                "param": "point",
+                "field": "major_category",
+                "type": "nominal",
+                "title":"Major Category Filter",
+                "scale": {"scheme": "accent"},
+                "legend": {
+                  "orient": "left", "titleFontSize": 12,"symbolType": "square",  "labelFontSize":8,
+                  "labelLimit":200
+                }
+                
+              },
+              "value": "lightgrey"
+            }
+          }
+        },
+
+
+        {
+          "width": 150,
+          "height": 500,
+          "mark": {"type": "bar", "cornerRadiusEnd": 7},
+          "encoding": {
+            "x": {
+              "field": "wage_percent_of_male",
+              "type": "quantitative",
+              "aggregate": "median",
+              "title": "Female wage (as a % of Male's)",
+              "axis": {"titleFontSize": 14, "labelFontSize": 12}
+            },
+            
+            "y": {
+              "field": "minor_category",
+              "type": "nominal",
+              "sort": {
+                "field": "wage_percent_of_male",
+                "op":"median",
+                "order": "descending"
+              },
+              "title": null,
+              "axis": {"titleFontSize": 14, "labelFontSize": 8}
+            },
+
+            "tooltip": 
+                {"aggregate": "median",
+                "field": "wage_percent_of_male", 
+                "type": "quantitative"},
+
+            "color": {
+              "condition": {
+                "param": "point",
+                "field": "major_category",
+                "type": "nominal"
+              },
+              "value": "lightgrey"
+            }
+          }
+        }
+      ]
+    },
+    {
+       "width": 600,
+        "height": 300,
+          "mark": "point",
+          "encoding": {
+            "x": {"field": "percent_female","type": "quantitative","axis": {"title":"Female participation (as a % of total workforce)"}},
+            "y": {"field": "wage_percent_of_male", "type": "quantitative","axis": {"title":"Female wage (as a % of Male's)"}},
+            "color": {
+              "condition": {
+                "param": "point",
+                "field": "major_category",
+                "type": "nominal"
+              },
+              "value": "grey"
+            }
+          }
+
+    },
+    {
+      "width": 600,
+      "height": 100,
+      "transform": [
+        {
+          "filter": 
+              {"param": "point"}
+        }
+      ],
+      "layer": [
+        {
+          "mark": {"type": "bar", "color": "grey"},
+          "encoding": {
+            "x": {"field": "total_earnings_male", "bin": {"maxbins":30}},
+            "y": {"aggregate": "count"},
+            "opacity": {"value": 0.5}
+          }
+        },
+        {
+          "mark": {"type": "bar","color": "yellow"},
+          "encoding": {
+            "x": {"field": "total_earnings_female", "bin": {"maxbins":20}, "axis": {"title": "Female and Male Worker Annual Earnings Distribution Comparison(US$) - Yellow: Female / Grey: Male"}},
+            "y": {"aggregate": "count"},
+            "opacity": {"value": 0.5}
+             
+          }
+        }
+      ]
+        
+    }
+  ]
+}
